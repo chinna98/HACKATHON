@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aqua - Quality Check</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Quality Check - Order #001</h1>
+        <form id="qualityForm" action="#" method="POST">
+            <label for="purity">Purity Level (%):</label><br>
+            <input type="number" id="purity" name="purity" min="0" max="100" required><br><br>
+
+            <label for="minerals">Minerals Added:</label><br>
+            <input type="text" id="minerals" name="minerals" placeholder="e.g., Calcium, Magnesium" required><br><br>
+
+            <label for="issues">Issues Detected:</label><br>
+            <textarea id="issues" name="issues" placeholder="e.g., None, Chemicals found"></textarea><br><br>
+
+            <button type="submit">Submit Quality Report</button>
+        </form>
+        <p><a href="merchant-dashboard.html">Back to Dashboard</a></p>
+    </div>
+</body>
+</html>

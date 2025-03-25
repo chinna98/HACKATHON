@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aqua - Verify Product</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Include html5-qrcode library from CDN -->
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Verify Your Water</h1>
+        <p>Scan or enter the QR code from your bottle.</p>
+
+        <!-- QR Scanner Container -->
+        <div id="qr-reader" style="width: 100%; max-width: 500px;"></div>
+        <button id="start-scan" onclick="startScanner()">Start Scanner</button>
+        <button id="stop-scan" onclick="stopScanner()" style="display: none;">Stop Scanner</button>
+
+        <!-- Manual Entry Form -->
+        <form id="verifyForm" onsubmit="verifyCode(event)">
+            <label for="qrCode">Or Enter QR Code Manually:</label><br>
+            <input type="text" id="qrCode" name="qrCode" placeholder="Enter QR code"><br><br>
+            <button type="submit">Verify</button>
+        </form>
+
+        <!-- Verification Result -->
+        <div id="result">
+            <h3>Verification Result</h3>
+            <p id="product-status">Product: Waiting for scan...</p>
+            <p id="order-id">Order ID: N/A</p>
+            <p id="quality">Quality: N/A</p>
+        </div>
+        <p><a href="user-dashboard.html">Back to Dashboard</a></p>
+    </div>
+
+    <script>
+        let html5QrCode;
+
+        // Start the QR scanner
+        function startScanner() {
+            html5QrCode = new Html5Qrcode("qr-reader");
+            const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+
+            html5QrCode.start(
+                { facingMode: "environment" }, // Use back camera
+                config,
+                (decodedText) => {
+                    // When QR code is scanned
+                    displayResult(decodedText);
+                    stopScanner(); // Stop scanning after successful scan
+                },
+                (error) => {
+                    console.log("QR Scan Error:", error);
+                }
+            ).then(() => {
+                document.getElementById("start-scan").style.display = "none";
+                document.getElementById("stop-scan").style.display = "inline";
+            }).catch((err) => {
+                alert("Error starting scanner: " + err);
+            });
+        }
+
+        // Stop the QR scanner
+        function stopScanner() {
+            if (html5QrCode) {
+                html5QrCode.stop().then(() => {
+                    html5QrCode.clear();
+                    document.getElementById("start-scan").style.display = "inline";
+                    document.getElementById("stop-scan").style.display = "none";
+                }).catch((err) => {
+                    alert("Error stopping scanner: " + err);
+                });
+            }
+        }
+
+        // Display the scanned result
+        function displayResult(qrCode) {
+            // Mock verification logic (replace with real data later)
+            const mockData = {
+                "AQUA123": { status: "Genuine", orderId: "#001", quality: "98% Pure, Mineral-Enhanced" },
+                "AQUA456": { status: "Genuine", orderId: "#002", quality: "95% Pure, Regular" }
+            };
+
+            const result = mockData[qrCode] || { status: "Invalid", orderId: "N/A", quality: "N/A" };
+            document.getElementById("product-status").textContent = `Product: ${result.status}`;
+            document.getElementById("order-id").textContent = `Order ID: ${result.orderId}`;
+            document.getElementById("quality").textContent = `Quality: ${result.quality}`;
+            document.getElementById("qrCode").value = qrCode; // Fill the input field
+        }
+
+        // Handle manual form submission
+        function verifyCode(event) {
+            event.preventDefault();
+            const qrCode = document.getElementById("qrCode").value;
+            if (qrCode) {
+                displayResult(qrCode);
+            } else {
+                alert("Please enter a QR code.");
+            }
+        }
+    </script>
+</body>
+</html>
